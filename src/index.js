@@ -12,7 +12,7 @@ fetchBreeds()
         data.map(({ id, name }) => breedList.insertAdjacentHTML('beforeend', createOptions(id, name)));
         loaderEl.classList.add('visually-hidden');
         new SlimSelect({
-          select: '#single',
+            select: '#breeds',
         })
         breedList.classList.remove('visually-hidden');
         breedList.addEventListener('change', getInfo);
@@ -30,6 +30,11 @@ function getInfo(evt) {
     loaderEl.classList.remove('visually-hidden');
     fetchCatByBreed(evt.currentTarget.value)
         .then(({ data }) => {
+            if (data.length < 1) {
+                Report.failure("Error", "We can't find any information about this breed:( Try find another breed.", "Ok");
+                loaderEl.classList.add('visually-hidden');
+                return;
+            }
             data.map(({ url, breeds }) => catInfo.innerHTML = createMarkup(url, breeds));
             catInfo.classList.remove('visually-hidden');
             loaderEl.classList.add('visually-hidden');
